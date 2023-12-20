@@ -1,0 +1,1 @@
+INFO_ID = 'vid'
