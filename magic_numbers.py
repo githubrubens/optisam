@@ -1,5 +1,3 @@
-HUBSPOT_TOKEN = 'HUBSPOT_TOKEN'
-
 PROPERTY_NAME = ['ancien_equipement_optique', 'ancien_equipement_optique_2', 'ancien_equipement_optique_3',
                  'autre_mutuelle__', 'autre_mutuelle_____2', 'date_d_adhesion', 'date_d_adhesion___m1',
                  'date_d_adhesion___m2', 'date_de_dernier_equipement',
