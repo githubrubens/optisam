@@ -86,20 +86,24 @@ def update_deal_property(deal_id, deal_details):
 def main():
     try:
         contact_infos = request.json
-        contact_id_hubspot = contact_infos[HS_HUBSPOT_ID]
+        contact_id_hubspot = contact_infos['HS_HUBSPOT_ID']  # Assuming HS_HUBSPOT_ID is defined somewhere
         labels = who_is_the_chef(contact_id_hubspot)
-        print(f"The chief is : {contact_id_hubspot}")
+        print(f"The chief is: {contact_id_hubspot}")
         print(f"Common Association Labels: {labels}")
         deals_id_chief = get_associated_deals(labels[0][0])
         deals_details = get_deal_details(deals_id_chief[0])
         print(deals_details)
+
         for label in labels[1:]:
             associated_contact = label[0]
             deals_id_associated_contacts = get_associated_deals(associated_contact)
             update_deal_property(deals_id_associated_contacts[0], deals_details)
-            #deals_details_associated_contacts = get_deal_details(deals_id_associated_contacts[0])
-            print(f'Contac ID Updated : {associated_contact}')
-            print(f'Deal ID Updated : {deals_id_associated_contacts[0]}')
+            print(f'Contact ID Updated: {associated_contact}')
+            print(f'Deal ID Updated: {deals_id_associated_contacts[0]}')
             print('-' * 100)
+
+        return jsonify({'message': 'Process completed successfully'}), 200
+
     except Exception as e:
         print(str(e))
+        return jsonify({'error': str(e)}), 500
