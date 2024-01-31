@@ -86,7 +86,7 @@ def update_deal_property(deal_id, deal_details):
 def main():
     try:
         contact_infos = request.json
-        contact_id_hubspot = contact_infos[VID]
+        contact_id_hubspot = contact_infos[HS_HUBSPOT_ID]
         labels = who_is_the_chef(contact_id_hubspot)
         print(f"The chief is : {contact_id_hubspot}")
         print(f"Common Association Labels: {labels}")

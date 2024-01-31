@@ -20,3 +20,4 @@ PROPERTY_NAME = ['ancien_equipement_optique', 'ancien_equipement_optique_2', 'an
                  'dealstage', 'pipeline']
 
 VID = 'vid'
+HS_HUBSPOT_ID = 'hs_object_id'
