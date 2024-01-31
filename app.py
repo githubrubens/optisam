@@ -7,10 +7,10 @@ from magic_numbers import *
 
 app = Flask(__name__)
 
-HUBSPOT_TOKEN = 'pat-eu1-72ceb19e-51ad-41ac-825f-c1b454b1ae82'
+#HUBSPOT_TOKEN = 'pat-eu1-72ceb19e-51ad-41ac-825f-c1b454b1ae82'
 
 
-HUBSPOT_ACCESS_TOKEN = os.environ[HUBSPOT_TOKEN]
+HUBSPOT_ACCESS_TOKEN = os.environ.get('HUBSPOT_TOKEN')
 client = hubspot.Client.create(access_token=HUBSPOT_ACCESS_TOKEN)
 hubspot_headers = {'Authorization': f'Bearer {HUBSPOT_ACCESS_TOKEN}'}
 
