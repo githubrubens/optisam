@@ -1,85 +1,17 @@
-import requests
-import hubspot
 from flask import Flask, request, jsonify
 import os
-from magic_numbers import *
-
+from family_helper import *
+from optimum_helper import *
+import hubspot
 
 app = Flask(__name__)
 
-#HUBSPOT_TOKEN = 'pat-eu1-72ceb19e-51ad-41ac-825f-c1b454b1ae82'
+# HUBSPOT_TOKEN = 'pat-eu1-72ceb19e-51ad-41ac-825f-c1b454b1ae82'
 
 
 HUBSPOT_ACCESS_TOKEN = os.environ.get('HUBSPOT_TOKEN')
 client = hubspot.Client.create(access_token=HUBSPOT_ACCESS_TOKEN)
 hubspot_headers = {'Authorization': f'Bearer {HUBSPOT_ACCESS_TOKEN}'}
-
-
-def who_is_the_chef(contact_id):
-    endpoint_url = f"https://api.hubapi.com/crm/v4/objects/contacts/{contact_id}/associations/contacts"
-    response = requests.get(endpoint_url, headers=hubspot_headers)
-
-    if response.status_code != 200:
-        raise Exception(f"Failed to retrieve associations: {response.text}")
-
-    members = []
-    results = response.json().get('results', [])
-
-    for result in results:
-        contact_id_2 = result['toObjectId']
-        types = result['associationTypes']
-
-        for assoc in types:
-            if assoc['category'] == 'USER_DEFINED':
-                label = assoc['label']
-                ayant_droit = (contact_id_2, 'Chef de famille' if label != 'Ayant droit' else 'Ayant droit')
-                chef = (contact_id, 'Chef de famille' if label == 'Ayant droit' else 'Ayant droit')
-
-                if members:
-                    members.append(ayant_droit)
-                else:
-                    members.extend([chef, ayant_droit])
-
-    return members
-
-
-def get_associated_deals(contact_id):
-    endpoint_url = f"https://api.hubapi.com/crm/v3/objects/contacts/{contact_id}/associations/deals"
-    response = requests.get(endpoint_url, headers=hubspot_headers)
-    if response.status_code != 200:
-        raise Exception(f"Failed to retrieve deals: {response.text}")
-    return [deal['id'] for deal in response.json().get('results', [])]
-
-
-def get_deal_details(deal_id):
-    endpoint_url = f"https://api.hubapi.com/crm/v3/objects/deals/{deal_id}"
-    params = {
-        'properties': ','.join(PROPERTY_NAME)  # Request all properties
-    }
-    response = requests.get(endpoint_url, headers=hubspot_headers, params=params)
-    if response.status_code != 200:
-        raise Exception(f"Failed to retrieve deal details: {response.text}")
-
-    deal_data = response.json().get('properties', {})
-    if deal_data['pipeline'] == '256106182':
-        # Filter out properties that don't have a value or their value is 0
-        deal_details = {key: value for key, value in deal_data.items() if
-                        value is not None and (not isinstance(value, (int, float)) or value > 0)}
-    else:
-        deal_details = 'Pas de pipeline Vente Optique'
-
-    return deal_details
-
-
-def update_deal_property(deal_id, deal_details):
-    endpoint_url = f"https://api.hubapi.com/crm/v3/objects/deals/{deal_id}"
-    data = {
-        "properties": deal_details
-    }
-
-    response = requests.patch(endpoint_url, headers=hubspot_headers, json=data)
-    if response.status_code != 200:
-        raise Exception(f"Failed to update deal: {response.text}")
 
 
 @app.route('/hubspot_webhook', methods=['POST'])
@@ -108,3 +40,70 @@ def main():
     except Exception as e:
         print(str(e))
         return jsonify({'error': str(e)}), 500
+
+
+@app.route('/optimum_webhook', methods=['POST'])
+def optimum():
+    """
+    Wrapper function to manage the process of finding or creating a user,
+    creating a visit, and handling propositions.
+    """
+    contact_infos = request.json
+
+    # CONTACT
+    civilite = 1
+    lastname = contact_infos[HS_HUBSPOT_ID]
+    firstname = contact_infos[HS_HUBSPOT_ID]
+    birth_date = contact_infos[HS_HUBSPOT_ID]
+    address = contact_infos[HS_HUBSPOT_ID]
+    zip_code = contact_infos[HS_HUBSPOT_ID]
+    city = contact_infos[HS_HUBSPOT_ID]
+    email = contact_infos[HS_HUBSPOT_ID]
+    phone = contact_infos[HS_HUBSPOT_ID]
+
+    # VISITE
+
+    date_prescription = '17/01/2021'
+    type_prescription = 1
+
+    # STOCK
+
+    article_type_id = 3
+    code_fabricant = '1331'
+    code_fournisseur = '1331'
+    code_article = '65d5cb69455ca'
+
+    # DEVIS
+
+    prix_de_vente = 1500
+    lot_mouvement_id = 12325267
+
+    client_id = get_user(lastname, firstname)
+    if client_id is None:
+        client_id = create_user(civilite, lastname, firstname, birth_date, address, zip_code, city, email, phone)
+        print(client_id)
+        if client_id is None:
+            print("Failed to get or create user.")
+            return
+
+    visit_id = create_visit(client_id, date_prescription, type_prescription)
+    if visit_id is None:
+        print("Failed to create a visit.")
+        return
+
+    proposition = create_proposition(client_id, visit_id, article_type_id, code_fabricant, code_fournisseur,
+                                     code_article,
+                                     prix_de_vente, lot_mouvement_id)
+    if proposition is None:
+        print("Failed to create a proposition.")
+        return
+
+    print(f"Process completed successfully. Client ID: {client_id}, Visit ID: {visit_id}")
+    # Extracting the proposition ID and data for generating devis
+    offre_id = proposition.get('offre_id')  # Adjust the key based on the actual JSON structure
+    devis = generer_devis(client_id, offre_id, proposition)
+    if devis is None:
+        print("Failed to generate a devis.")
+        return
+    print(
+        f"Process completed successfully. Client ID: {client_id}, Visit ID: {visit_id}, Offre ID: {offre_id}, Devis: {devis}")
