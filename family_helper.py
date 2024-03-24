@@ -1,7 +1,12 @@
 from magic_numbers import *
-from app import hubspot_headers
 import requests
+import os
+import hubspot
 
+
+HUBSPOT_ACCESS_TOKEN = os.environ.get('HUBSPOT_TOKEN')
+client = hubspot.Client.create(access_token=HUBSPOT_ACCESS_TOKEN)
+hubspot_headers = {'Authorization': f'Bearer {HUBSPOT_ACCESS_TOKEN}'}
 
 def who_is_the_chef(contact_id):
     endpoint_url = f"https://api.hubapi.com/crm/v4/objects/contacts/{contact_id}/associations/contacts"
