@@ -50,11 +50,12 @@ def optimum():
         firstname = contact_infos[FIRSTNAME] if contact_infos[FIRSTNAME] else ''
         birth_date = convert_timestamp_to_date(contact_infos[BIRTH_DATE]) if contact_infos[BIRTH_DATE] else ''
         address = contact_infos[ADDRESS] if contact_infos[ADDRESS] else ''
-        zip_code = contact_infos[ZIP_CODE] if contact_infos[ZIP_CODE] else ''
+        zip_code = str(contact_infos[ZIP_CODE]) if contact_infos[ZIP_CODE] else ''
         city = contact_infos[CITY] if contact_infos[CITY] else ''
         email = contact_infos[EMAIL] if contact_infos[EMAIL] else ''
         phone = contact_infos[PHONE] if contact_infos[PHONE] else ''
-
+        if '+33' in phone:
+            phone = phone.replace('+33', '0')
         # VISITE
 
         date_prescription = '17/01/2021'
@@ -96,6 +97,7 @@ def optimum():
         devis = generer_devis(client_id, offre_id, proposition)
         if devis is None:
             return jsonify({'error': str("Failed to generate a devis.")}), 404
-        return jsonify({'message': f"Process completed successfully. Client ID: {client_id}, Visit ID: {visit_id}, Offre ID: {offre_id}, Devis: {devis}"}), 200
+        return jsonify({
+                           'message': f"Process completed successfully. Client ID: {client_id}, Visit ID: {visit_id}, Offre ID: {offre_id}, Devis: {devis}"}), 200
     except Exception as e:
         return jsonify({'message': f"Exception : {e}"}), 500
