@@ -78,29 +78,22 @@ def optimum():
         client_id = create_user(civilite, lastname, firstname, birth_date, address, zip_code, city, email, phone)
         print(client_id)
         if client_id is None:
-            print("Failed to get or create user.")
-            return
+            return jsonify({'error': str("Failed to get or create user.")}), 404
 
     visit_id = create_visit(client_id, date_prescription, type_prescription)
     if visit_id is None:
-        print("Failed to create a visit.")
-        return
+        return jsonify({'error': str("Failed to create a visit.")}), 404
 
     proposition = create_proposition(client_id, visit_id, article_type_id, code_fabricant, code_fournisseur,
                                      code_article,
                                      prix_de_vente, lot_mouvement_id)
     if proposition is None:
-        print("Failed to create a proposition.")
-        return
+        return jsonify({'error': str("Failed to create a proposition.")}), 404
 
     print(f"Process completed successfully. Client ID: {client_id}, Visit ID: {visit_id}")
-    # Extracting the proposition ID and data for generating devis
-    print(proposition)
     offre_id = proposition.get('offre_id')  # Adjust the key based on the actual JSON structure
-    print(offre_id)
+    print(f"Offre ID: {offre_id}")
     devis = generer_devis(client_id, offre_id, proposition)
     if devis is None:
-        print("Failed to generate a devis.")
-        return
-    print(
-        f"Process completed successfully. Client ID: {client_id}, Visit ID: {visit_id}, Offre ID: {offre_id}, Devis: {devis}")
+        return jsonify({'error': str("Failed to generate a devis.")}), 404
+    return jsonify({'message': f"Process completed successfully. Client ID: {client_id}, Visit ID: {visit_id}, Offre ID: {offre_id}, Devis: {devis}"}), 200
