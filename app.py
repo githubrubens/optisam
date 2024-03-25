@@ -95,7 +95,9 @@ def optimum():
 
     print(f"Process completed successfully. Client ID: {client_id}, Visit ID: {visit_id}")
     # Extracting the proposition ID and data for generating devis
+    print(proposition)
     offre_id = proposition.get('offre_id')  # Adjust the key based on the actual JSON structure
+    print(offre_id)
     devis = generer_devis(client_id, offre_id, proposition)
     if devis is None:
         print("Failed to generate a devis.")
