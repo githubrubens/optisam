@@ -47,6 +47,7 @@ def create_user(civilite, lastname, firstname, birth_date, address, zip_code, ci
         "email": email,
         "telephone_portable": phone
     }
+    print(client_data)
     try:
         response = requests.post(url, headers=headers_test,
                                  json=client_data)  # Use json= to automatically set content-type
