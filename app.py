@@ -42,6 +42,7 @@ def optimum():
     creating a visit, and handling propositions.
     """
     contact_infos = request.json
+    print(contact_infos)
 
     # CONTACT
     civilite = 1
