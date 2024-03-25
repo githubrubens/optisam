@@ -21,3 +21,19 @@ PROPERTY_NAME = ['ancien_equipement_optique', 'ancien_equipement_optique_2', 'an
 
 VID = 'vid'
 HS_HUBSPOT_ID = 'hs_object_id'
+
+LASTNAME = 'lastname'
+FIRSTNAME = 'firstname'
+ZIP_CODE = 'zip'
+BIRTH_DATE = 'date_of_birth'
+CITY = 'city'
+PHONE = 'phone'
+ADDRESS = 'address'
+EMAIL = 'email'
+TYPE_EQ = 'type_eq'
+
+LENTILLE = 'lentille'
+LUNETTE = 'lunette'
+
+DATE_RBSM = 'date_rbsm'
+MONTANT_RBSM = 'montant_rbsm'

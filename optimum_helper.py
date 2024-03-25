@@ -1,4 +1,5 @@
 import requests
+import json
 
 # Define the base URL and the endpoint
 base_url_test = "https://demo.livebyoptimum.com/api"
@@ -95,7 +96,6 @@ def create_proposition(client_id, visit_id, article_type_id, code_fabricant, cod
     }
     try:
         response_prop = requests.post(url_create_prop, headers=headers_test, json=client_proposition)
-        response_prop.raise_for_status()
         print("Proposition created successfully.")
         return response_prop.json()
     except Exception as e:

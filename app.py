@@ -46,14 +46,14 @@ def optimum():
 
     # CONTACT
     civilite = 1
-    lastname = contact_infos[HS_HUBSPOT_ID]
-    firstname = contact_infos[HS_HUBSPOT_ID]
-    birth_date = contact_infos[HS_HUBSPOT_ID]
-    address = contact_infos[HS_HUBSPOT_ID]
-    zip_code = contact_infos[HS_HUBSPOT_ID]
-    city = contact_infos[HS_HUBSPOT_ID]
-    email = contact_infos[HS_HUBSPOT_ID]
-    phone = contact_infos[HS_HUBSPOT_ID]
+    lastname = contact_infos[LASTNAME]
+    firstname = contact_infos[FIRSTNAME]
+    birth_date = contact_infos[BIRTH_DATE]
+    address = contact_infos[ADDRESS]
+    zip_code = contact_infos[ZIP_CODE]
+    city = contact_infos[CITY]
+    email = contact_infos[EMAIL]
+    phone = contact_infos[PHONE]
 
     # VISITE
 
@@ -61,15 +61,16 @@ def optimum():
     type_prescription = 1
 
     # STOCK
-
-    article_type_id = 3
+    type_eq = contact_infos[TYPE_EQ]
+    article_type_id = 3 if type_eq == LUNETTE else 1
     code_fabricant = '1331'
     code_fournisseur = '1331'
     code_article = '65d5cb69455ca'
 
     # DEVIS
 
-    prix_de_vente = 1500
+    montant_rbsm = contact_infos[MONTANT_RBSM]
+    prix_de_vente = montant_rbsm
     lot_mouvement_id = 12325267
 
     client_id = get_user(lastname, firstname)
