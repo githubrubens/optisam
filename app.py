@@ -46,14 +46,14 @@ def optimum():
 
     # CONTACT
     civilite = 1
-    lastname = contact_infos[LASTNAME]
-    firstname = contact_infos[FIRSTNAME]
-    birth_date = contact_infos[BIRTH_DATE]
-    address = contact_infos[ADDRESS]
-    zip_code = contact_infos[ZIP_CODE]
-    city = contact_infos[CITY]
-    email = contact_infos[EMAIL]
-    phone = contact_infos[PHONE]
+    lastname = contact_infos[LASTNAME] if contact_infos[LASTNAME] else ''
+    firstname = contact_infos[FIRSTNAME] if contact_infos[FIRSTNAME] else ''
+    birth_date = convert_timestamp_to_date(contact_infos[BIRTH_DATE]) if contact_infos[BIRTH_DATE] else ''
+    address = contact_infos[ADDRESS] if contact_infos[ADDRESS] else ''
+    zip_code = contact_infos[ZIP_CODE] if contact_infos[ZIP_CODE] else ''
+    city = contact_infos[CITY] if contact_infos[CITY] else ''
+    email = contact_infos[EMAIL] if contact_infos[EMAIL] else ''
+    phone = contact_infos[PHONE] if contact_infos[PHONE] else ''
 
     # VISITE
 
@@ -69,7 +69,7 @@ def optimum():
 
     # DEVIS
 
-    montant_rbsm = contact_infos[MONTANT_RBSM]
+    montant_rbsm = contact_infos[MONTANT_RBSM] if contact_infos[MONTANT_RBSM] else ''
     prix_de_vente = montant_rbsm
     lot_mouvement_id = 12325267
 
@@ -96,4 +96,5 @@ def optimum():
     devis = generer_devis(client_id, offre_id, proposition)
     if devis is None:
         return jsonify({'error': str("Failed to generate a devis.")}), 404
-    return jsonify({'message': f"Process completed successfully. Client ID: {client_id}, Visit ID: {visit_id}, Offre ID: {offre_id}, Devis: {devis}"}), 200
+    return jsonify({
+                       'message': f"Process completed successfully. Client ID: {client_id}, Visit ID: {visit_id}, Offre ID: {offre_id}, Devis: {devis}"}), 200

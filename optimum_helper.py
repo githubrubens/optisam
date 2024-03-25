@@ -1,5 +1,6 @@
 import requests
 import json
+import datetime
 
 # Define the base URL and the endpoint
 base_url_test = "https://demo.livebyoptimum.com/api"
@@ -118,3 +119,13 @@ def generer_devis(client_id, offre_id, proposition_data):
     except Exception as e:
         print(f"Failed to generate devis: {e}")
         return None
+
+
+def convert_timestamp_to_date(timestamp_ms):
+    # Convert milliseconds to seconds
+    timestamp_sec = timestamp_ms / 1000
+    # Convert timestamp to datetime object
+    date_obj = datetime.datetime.utcfromtimestamp(timestamp_sec)
+    # Format datetime object as required
+    formatted_date = date_obj.strftime('%d/%m/%Y')
+    return formatted_date
