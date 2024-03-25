@@ -1,16 +1,15 @@
 import requests
 import json
 import datetime
+import os
 
 # Define the base URL and the endpoint
 base_url_test = "https://demo.livebyoptimum.com/api"
-# Your actual API token should replace 'votre_api_token'
-api_token_test = "TESTAPIKEY_6526AE376CFBF"
+OPTIMUM_TOKEN_TEST = os.environ.get('OPTIMUM_TOKEN_TEST')
 headers_test = {
-    "X-API-KEY": api_token_test,
+    "X-API-KEY": OPTIMUM_TOKEN_TEST,
     "Content-Type": "application/json"  # Assuming JSON payload
 }
-
 
 def get_user(lastname, firstname):
     """
